@@ -3,7 +3,7 @@ use karinc::{hir::id::*, input::*};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub fn compile(input: &str) -> Vec<String> {
+pub fn compile(input: &str) -> String {
     let input_tree = InputTree {
         hakos: vec![
             InputHako {
@@ -20,15 +20,11 @@ pub fn compile(input: &str) -> Vec<String> {
         ],
     };
     let options = CompilerOptions {
-        root_source_name: "index".to_string(),
-        bundles: true,
-        module: JsModule::Es,
+        output_root_name: "index".to_string(),
     };
     let output = Compiler::compile(&input_tree, &options);
-    output.files.into_iter().map(|file| {
-        match file.source {
-            Some(code) => code.source,
-            None => "err".to_string(),
-        }
-    }).collect()
+    match output.file.source {
+        Some(code) => code.source,
+        None => "err".to_string(),
+    }
 }
